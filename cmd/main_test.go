@@ -67,6 +67,8 @@ func Test_adjustGpx(t *testing.T) {
 }
 
 func Test_writeFile(t *testing.T) {
+	testData := GetTwoEntriesGpx()
+
 	type args struct {
 		fileName string
 		data     *gpxStruct.GpxStruct
@@ -77,7 +79,7 @@ func Test_writeFile(t *testing.T) {
 		wantResult bool
 		wantErr    bool
 	}{
-		// TODO: Add test cases.
+		{name: "Writing File", args: args{fileName: "fileFromTest.gpx", data: &testData}, wantResult: true, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

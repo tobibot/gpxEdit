@@ -86,8 +86,17 @@ func adjustGpx(data *gpxStruct.GpxStruct, lonAdjustment, latAdjustment float64) 
 }
 
 func writeFile(fileName string, data *gpxStruct.GpxStruct) (result bool, err error) {
+	file, err := xml.MarshalIndent(data, "", " ")
+	if err != nil {
+		return false, err
+	}
 
-	return false, fmt.Errorf("Not implemented")
+	err = ioutil.WriteFile(fileName, file, 0644)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 func printUsage() {
