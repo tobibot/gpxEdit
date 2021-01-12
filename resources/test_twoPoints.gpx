@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1"
+    xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+    xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+    xmlns:ns1="http://www.cluetrust.com/XML/GPXDATA/1/0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" creator="Huami Amazfit Pace" version="1.3" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd">
+    <metadata>
+        <name>Huami Amazfit Sports Watch</name>
+        <time>2021-01-03T09:52:17Z</time>
+    </metadata>
+    <trk>
+        <name>Sport</name>
+        <number>2016</number>
+        <type>run</type>
+        <trkseg>
+            <trkpt lat="51.00000000" lon="7.00000000">
+                <time>2021-01-03T09:52:19Z</time>
+                <extensions>
+                    <gpxtpx:TrackPointExtension>
+                        <gpxtpx:hr>102</gpxtpx:hr>
+                    </gpxtpx:TrackPointExtension>
+                </extensions>
+            </trkpt>
+            <trkpt lat="50.95363072" lon="7.13367296">
+                <time>2021-01-03T09:52:19Z</time>
+                <extensions>
+                    <gpxtpx:TrackPointExtension>
+                        <gpxtpx:hr>102</gpxtpx:hr>
+                    </gpxtpx:TrackPointExtension>
+                </extensions>
+            </trkpt>
+        </trkseg>
+    </trk>
+</gpx>
