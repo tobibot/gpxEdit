@@ -33,6 +33,67 @@ func Test_readFile(t *testing.T) {
 	}
 }
 
+func Test_adjustGpx(t *testing.T) {
+	testData := GetTwoEntriesGpx()
+
+	wantData := GetTwoEntriesGpx()
+	wantData.Trk.Trkseg.Trkpt = GetTrkptAdjustedByPlusOneDegree()
+
+	type args struct {
+		data          *gpxStruct.GpxStruct
+		lonAdjustment float64
+		latAdjustment float64
+	}
+	tests := []struct {
+		name        string
+		args        args
+		wantDataOut *gpxStruct.GpxStruct
+		wantErr     bool
+	}{
+		{name: "Adjust by plus one degree", args: args{data: &testData, latAdjustment: 1.0, lonAdjustment: 1.0}, wantDataOut: &wantData, wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotDataOut, err := adjustGpx(tt.args.data, tt.args.lonAdjustment, tt.args.latAdjustment)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("adjustGpx() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotDataOut, tt.wantDataOut) {
+				t.Errorf("adjustGpx() gotDataOut = %v, want %v", gotDataOut, tt.wantDataOut)
+			}
+		})
+	}
+}
+
+func Test_writeFile(t *testing.T) {
+	type args struct {
+		fileName string
+		data     *gpxStruct.GpxStruct
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantResult bool
+		wantErr    bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotResult, err := writeFile(tt.args.fileName, tt.args.data)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("writeFile() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotResult != tt.wantResult {
+				t.Errorf("writeFile() gotResult = %v, want %v", gotResult, tt.wantResult)
+			}
+		})
+	}
+}
+
+// helper:
 func GetTwoEntriesGpx() gpxStruct.GpxStruct {
 	return gpxStruct.GpxStruct{
 		XMLName: xml.Name{
@@ -51,6 +112,14 @@ func GetTwoEntriesGpx() gpxStruct.GpxStruct {
 		Metadata:       GetMetadata(),
 
 		Trk: GetTrk(),
+	}
+}
+
+func GetMetadata() gpxStruct.Metadata {
+	return gpxStruct.Metadata{
+		Text: "\n        \n        \n    ",
+		Name: "Huami Amazfit Sports Watch",
+		Time: "2021-01-03T09:52:17Z",
 	}
 }
 
@@ -106,65 +175,37 @@ func GetTrkpt() []gpxStruct.Trkpt {
 	}
 }
 
-func GetMetadata() gpxStruct.Metadata {
-	return gpxStruct.Metadata{
-		Text: "\n        \n        \n    ",
-		Name: "Huami Amazfit Sports Watch",
-		Time: "2021-01-03T09:52:17Z",
-	}
-}
-
-func Test_adjustGpx(t *testing.T) {
-	type args struct {
-		data gpxStruct.GpxStruct
-		lon  float64
-		lat  float64
-	}
-	tests := []struct {
-		name       string
-		args       args
-		wantResult gpxStruct.GpxStruct
-		wantErr    bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			gotResult, err := adjustGpx(tt.args.data, tt.args.lon, tt.args.lat)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("adjustGpx() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(gotResult, tt.wantResult) {
-				t.Errorf("adjustGpx() gotResult = %v, want %v", gotResult, tt.wantResult)
-			}
-		})
-	}
-}
-
-func Test_writeFile(t *testing.T) {
-	type args struct {
-		fileName string
-		data     gpxStruct.GpxStruct
-	}
-	tests := []struct {
-		name       string
-		args       args
-		wantResult bool
-		wantErr    bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			gotResult, err := writeFile(tt.args.fileName, tt.args.data)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("writeFile() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if gotResult != tt.wantResult {
-				t.Errorf("writeFile() gotResult = %v, want %v", gotResult, tt.wantResult)
-			}
-		})
+func GetTrkptAdjustedByPlusOneDegree() []gpxStruct.Trkpt {
+	return []gpxStruct.Trkpt{
+		{
+			Text: "\n                \n                \n            ",
+			Lat:  "52.00000000",
+			Lon:  "8.00000000",
+			Time: "2021-01-03T09:52:19Z",
+			Extensions: gpxStruct.Extensions{
+				Text: "\n                    \n                ",
+				TrackPointExtension: gpxStruct.TrackPointExtension{
+					Text: "\n                        \n                    ",
+					Hr:   "102",
+					Cad:  "",
+				},
+			},
+			Ele: "",
+		},
+		{
+			Text: "\n                \n                \n            ",
+			Lat:  "51.95363072",
+			Lon:  "8.13367296",
+			Time: "2021-01-03T09:52:19Z",
+			Extensions: gpxStruct.Extensions{
+				Text: "\n                    \n                ",
+				TrackPointExtension: gpxStruct.TrackPointExtension{
+					Text: "\n                        \n                    ",
+					Hr:   "102",
+					Cad:  "",
+				},
+			},
+			Ele: "",
+		},
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -20,7 +21,7 @@ func main() {
 	gpx, err := readFile(inputFileName)
 	checkError(err)
 
-	gpxNew, err := adjustGpx(gpx, latitudeAdjustment, longitudeAdjustment)
+	gpxNew, err := adjustGpx(&gpx, latitudeAdjustment, longitudeAdjustment)
 	checkError(err)
 
 	written, err := writeFile(outputFileName, gpxNew)
@@ -61,11 +62,30 @@ func readFile(fileName string) (result gpxStruct.GpxStruct, err error) {
 	return data, nil
 }
 
-func adjustGpx(data gpxStruct.GpxStruct, lon, lat float64) (result gpxStruct.GpxStruct, err error) {
-	return gpxStruct.GpxStruct{}, fmt.Errorf("Not implemented")
+func adjustGpx(data *gpxStruct.GpxStruct, lonAdjustment, latAdjustment float64) (dataOut *gpxStruct.GpxStruct, err error) {
+
+	for i, trkpt := range data.Trk.Trkseg.Trkpt {
+		originalLat, err := strconv.ParseFloat(trkpt.Lat, 64)
+		trkpt.Lat = strconv.FormatFloat((originalLat + latAdjustment), 'f', 8, 64)
+
+		if err != nil {
+			return &gpxStruct.GpxStruct{}, err
+		}
+
+		originalLon, err := strconv.ParseFloat(trkpt.Lon, 64)
+		trkpt.Lon = strconv.FormatFloat((originalLon + lonAdjustment), 'f', 8, 64)
+
+		if err != nil {
+			return &gpxStruct.GpxStruct{}, err
+		}
+
+		data.Trk.Trkseg.Trkpt[i] = trkpt
+	}
+
+	return data, nil
 }
 
-func writeFile(fileName string, data gpxStruct.GpxStruct) (result bool, err error) {
+func writeFile(fileName string, data *gpxStruct.GpxStruct) (result bool, err error) {
 
 	return false, fmt.Errorf("Not implemented")
 }
