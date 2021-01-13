@@ -13,10 +13,11 @@ import (
 func main() {
 	printUsage()
 
-	inputFileName := "file.gpx"
-	outputFileName := "outFile.gpx"
-	latitudeAdjustment := 0.00001
-	longitudeAdjustment := 0.000005
+	// ToDo: package Flags for input
+	inputFileName := "./resources/testInput.gpx"
+	outputFileName := "./resources/testOutput.gpx"
+	latitudeAdjustment := 0.0041   // east-west
+	longitudeAdjustment := -0.0001 // north-south
 
 	gpx, err := readFile(inputFileName)
 	checkError(err)
@@ -40,7 +41,7 @@ func readFile(fileName string) (result gpxStruct.GpxStruct, err error) {
 	xmlFile, err := os.Open(fileName)
 
 	if err != nil {
-		fmt.Println(err)
+		return gpxStruct.GpxStruct{}, err
 	}
 
 	fmt.Printf("Successfully Opened %s\n", fileName)

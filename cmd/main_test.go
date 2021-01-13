@@ -79,7 +79,7 @@ func Test_writeFile(t *testing.T) {
 		wantResult bool
 		wantErr    bool
 	}{
-		{name: "Writing File", args: args{fileName: "fileFromTest.gpx", data: &testData}, wantResult: true, wantErr: false},
+		{name: "Writing File", args: args{fileName: "../resources/fileFromTest.gpx", data: &testData}, wantResult: true, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
