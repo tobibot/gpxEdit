@@ -2,34 +2,53 @@ package main
 
 import (
 	"encoding/xml"
+	"flag"
 	"fmt"
 	"github.com/tobibot/gpxEdit/cmd/gpxStruct"
 	"io/ioutil"
 	"log"
 	"os"
+	"runtime"
 	"strconv"
 )
 
+var (
+	inFile              = flag.String("in", "", "Input file name")
+	outFile             = flag.String("out", "", "Output file name")
+	latitudeAdjustment  = flag.Float64("lat", 0.0, "latitude adjustment (optional, defaults to 0.0)")
+	longitudeAdjustment = flag.Float64("lon", 0.0, "longitude adjustment (optional, defaults to 0.0)")
+)
+
 func main() {
-	printUsage()
+	flag.Parse()
 
-	// ToDo: package Flags for input
-	inputFileName := "./resources/testInput.gpx"
-	outputFileName := "./resources/testOutput.gpx"
-	latitudeAdjustment := 0.0041   // east-west
-	longitudeAdjustment := -0.0001 // north-south
+	if *inFile == "" {
+		printUsage()
+		os.Exit(-1)
+	}
 
-	gpx, err := readFile(inputFileName)
+	if *outFile == "" {
+		printUsage()
+		os.Exit(-1)
+	}
+
+	fmt.Println("Params:")
+	fmt.Printf("inFile: %s\n", *inFile)
+	fmt.Printf("outFile: %s\n", *outFile)
+	fmt.Printf("latitude adjustment: %f\n", *latitudeAdjustment)
+	fmt.Printf("longitude adjustment: %f\n\n", *longitudeAdjustment)
+
+	gpx, err := readFile(*inFile)
 	checkError(err)
 
-	gpxNew, err := adjustGpx(&gpx, latitudeAdjustment, longitudeAdjustment)
+	gpxNew, err := adjustGpx(&gpx, *latitudeAdjustment, *longitudeAdjustment)
 	checkError(err)
 
-	written, err := writeFile(outputFileName, gpxNew)
+	written, err := writeFile(*outFile, gpxNew)
 	checkError(err)
 
 	if written {
-		fmt.Printf("New file written to %s\n", outputFileName)
+		fmt.Printf("New file written to %s\n", *outFile)
 	} else {
 		fmt.Println("file wasn't written")
 	}
@@ -102,6 +121,24 @@ func writeFile(fileName string, data *gpxStruct.GpxStruct) (result bool, err err
 
 func printUsage() {
 
+	var execName string
+	switch {
+	case runtime.GOOS == "darwin":
+		execName = "./gpxEdit"
+	case runtime.GOOS == "linux":
+		execName = "./gpxEdit"
+	default:
+		execName = "gpxEdit.exe"
+	}
+
+	msg := "This tool transforms your track by the input you give north or south and east or west.\n"
+	msg += "Params:\n"
+	msg += "-in PathToYourInputFile 	(gpx-Input)\n"
+	msg += "-out PathToYourOutputFile 	(desired place to write the result)\n"
+	msg += "-lat PathToYourOutputFile 	(longitude adjustment for each track point in your gpx-File. Default: 0.0. Decimal value.)\n"
+	msg += "-lon PathToYourOutputFile 	(latitude adjustment for each track point in your gpx-File. Default: 0.0. Decimal value.)\n"
+	msg += fmt.Sprintf("Sample: %s -in myLastRun.gpx -out myLastRunAdjusted.gpx -lat 0.13\n\n", execName)
+	fmt.Println(msg)
 }
 
 func checkError(err error) {
