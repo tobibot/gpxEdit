@@ -4,12 +4,13 @@ import (
 	"encoding/xml"
 	"flag"
 	"fmt"
-	"github.com/tobibot/gpxEdit/cmd/gpxStruct"
 	"io/ioutil"
 	"log"
 	"os"
 	"runtime"
 	"strconv"
+
+	"github.com/tobibot/gpxEdit/cmd/gpxStruct"
 )
 
 var (
@@ -84,22 +85,26 @@ func readFile(fileName string) (result gpxStruct.GpxStruct, err error) {
 
 func adjustGpx(data *gpxStruct.GpxStruct, lonAdjustment, latAdjustment float64) (dataOut *gpxStruct.GpxStruct, err error) {
 
-	for i, trkpt := range data.Trk.Trkseg.Trkpt {
-		originalLat, err := strconv.ParseFloat(trkpt.Lat, 64)
-		trkpt.Lat = strconv.FormatFloat((originalLat + latAdjustment), 'f', 8, 64)
+	for i, trk := range data.Trks {
+		for j, trkseg := range trk.Trksegs {
+			for k, trkpt := range trkseg.Waypoints {
+				originalLat, err := strconv.ParseFloat(trkpt.Lat, 64)
+				trkpt.Lat = strconv.FormatFloat((originalLat + latAdjustment), 'f', 8, 64)
 
-		if err != nil {
-			return &gpxStruct.GpxStruct{}, err
+				if err != nil {
+					return &gpxStruct.GpxStruct{}, err
+				}
+
+				originalLon, err := strconv.ParseFloat(trkpt.Lon, 64)
+				trkpt.Lon = strconv.FormatFloat((originalLon + lonAdjustment), 'f', 8, 64)
+
+				if err != nil {
+					return &gpxStruct.GpxStruct{}, err
+				}
+
+				data.Trks[i].Trksegs[j].Waypoints[k] = trkpt
+			}
 		}
-
-		originalLon, err := strconv.ParseFloat(trkpt.Lon, 64)
-		trkpt.Lon = strconv.FormatFloat((originalLon + lonAdjustment), 'f', 8, 64)
-
-		if err != nil {
-			return &gpxStruct.GpxStruct{}, err
-		}
-
-		data.Trk.Trkseg.Trkpt[i] = trkpt
 	}
 
 	return data, nil

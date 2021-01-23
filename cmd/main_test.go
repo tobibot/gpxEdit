@@ -37,7 +37,7 @@ func Test_adjustGpx(t *testing.T) {
 	testData := GetTwoEntriesGpx()
 
 	wantData := GetTwoEntriesGpx()
-	wantData.Trk.Trkseg.Trkpt = GetTrkptAdjustedByPlusOneDegree()
+	wantData.Trks[0].Trksegs[0].Waypoints = GetTrkptAdjustedByPlusOneDegree()
 
 	type args struct {
 		data          *gpxStruct.GpxStruct
@@ -113,7 +113,7 @@ func GetTwoEntriesGpx() gpxStruct.GpxStruct {
 		SchemaLocation: "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd",
 		Metadata:       GetMetadata(),
 
-		Trk: GetTrk(),
+		Trks: GetTrk(),
 	}
 }
 
@@ -125,26 +125,30 @@ func GetMetadata() gpxStruct.Metadata {
 	}
 }
 
-func GetTrk() gpxStruct.Trk {
-	return gpxStruct.Trk{
-		Text:   "\n        \n        \n        \n        \n    ",
-		Name:   "Sport",
-		Number: "2016",
-		Type:   "run",
-		Trkseg: GetTrkseg(),
+func GetTrk() []gpxStruct.Trk {
+	return []gpxStruct.Trk{
+		gpxStruct.Trk{
+			Text:    "\n        \n        \n        \n        \n    ",
+			Name:    "Sport",
+			Number:  "2016",
+			Type:    "run",
+			Trksegs: GetTrksegs(),
+		},
 	}
 }
 
-func GetTrkseg() gpxStruct.Trkseg {
-	return gpxStruct.Trkseg{
-		Text:  "\n            \n            \n        ",
-		Trkpt: GetTrkpt(),
+func GetTrksegs() []gpxStruct.Trkseg {
+	return []gpxStruct.Trkseg{
+		gpxStruct.Trkseg{
+			Text:      "\n            \n            \n        ",
+			Waypoints: GetTrkpts(),
+		},
 	}
 }
 
-func GetTrkpt() []gpxStruct.Trkpt {
-	return []gpxStruct.Trkpt{
-		{
+func GetTrkpts() gpxStruct.Waypoints {
+	return []gpxStruct.Wpt{
+		gpxStruct.Wpt{
 			Text: "\n                \n                \n            ",
 			Lat:  "51.00000000",
 			Lon:  "7.00000000",
@@ -177,8 +181,8 @@ func GetTrkpt() []gpxStruct.Trkpt {
 	}
 }
 
-func GetTrkptAdjustedByPlusOneDegree() []gpxStruct.Trkpt {
-	return []gpxStruct.Trkpt{
+func GetTrkptAdjustedByPlusOneDegree() gpxStruct.Waypoints {
+	return gpxStruct.Waypoints{
 		{
 			Text: "\n                \n                \n            ",
 			Lat:  "52.00000000",
