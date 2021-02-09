@@ -35,9 +35,11 @@ func Test_readFile(t *testing.T) {
 
 func Test_adjustGpx(t *testing.T) {
 	testData := GetTwoEntriesGpx()
-
 	wantData := GetTwoEntriesGpx()
 	wantData.Trks[0].Trksegs[0].Waypoints = GetTrkptAdjustedByPlusOneDegree()
+
+	testData2in := GetTwoEntriesGpx()
+	testData2want := GetTwoEntriesGpx()
 
 	type args struct {
 		data          *gpxStruct.GpxStruct
@@ -51,6 +53,8 @@ func Test_adjustGpx(t *testing.T) {
 		wantErr     bool
 	}{
 		{name: "Adjust by plus one degree", args: args{data: &testData, latAdjustment: 1.0, lonAdjustment: 1.0}, wantDataOut: &wantData, wantErr: false},
+		{name: "Adjust by +180 and +360 degree", args: args{data: &testData2in, latAdjustment: 180.0, lonAdjustment: 360.0}, wantDataOut: &testData2want, wantErr: false},
+		{name: "Adjust by -180 and -360 degree", args: args{data: &testData2in, latAdjustment: -180.0, lonAdjustment: -360.0}, wantDataOut: &testData2want, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -127,7 +131,7 @@ func GetMetadata() gpxStruct.Metadata {
 
 func GetTrk() []gpxStruct.Trk {
 	return []gpxStruct.Trk{
-		gpxStruct.Trk{
+		{
 			Text:    "\n        \n        \n        \n        \n    ",
 			Name:    "Sport",
 			Number:  "2016",
@@ -139,7 +143,7 @@ func GetTrk() []gpxStruct.Trk {
 
 func GetTrksegs() []gpxStruct.Trkseg {
 	return []gpxStruct.Trkseg{
-		gpxStruct.Trkseg{
+		{
 			Text:      "\n            \n            \n        ",
 			Waypoints: GetTrkpts(),
 		},
@@ -148,7 +152,7 @@ func GetTrksegs() []gpxStruct.Trkseg {
 
 func GetTrkpts() gpxStruct.Waypoints {
 	return []gpxStruct.Wpt{
-		gpxStruct.Wpt{
+		{
 			Text: "\n                \n                \n            ",
 			Lat:  "51.00000000",
 			Lon:  "7.00000000",

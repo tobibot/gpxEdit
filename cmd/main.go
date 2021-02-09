@@ -89,19 +89,28 @@ func adjustGpx(data *gpxStruct.GpxStruct, lonAdjustment, latAdjustment float64) 
 		for j, trkseg := range trk.Trksegs {
 			for k, trkpt := range trkseg.Waypoints {
 				originalLat, err := strconv.ParseFloat(trkpt.Lat, 64)
-				trkpt.Lat = strconv.FormatFloat((originalLat + latAdjustment), 'f', 8, 64)
-
 				if err != nil {
 					return &gpxStruct.GpxStruct{}, err
 				}
+				newLat := originalLat + latAdjustment
+				if newLat < -90 { // -100
+					newLat = 180 + newLat
+				} else if newLat > 90 {
+					newLat = -180 + newLat
+				}
+				trkpt.Lat = strconv.FormatFloat(newLat, 'f', 8, 64)
 
 				originalLon, err := strconv.ParseFloat(trkpt.Lon, 64)
-				trkpt.Lon = strconv.FormatFloat((originalLon + lonAdjustment), 'f', 8, 64)
-
 				if err != nil {
 					return &gpxStruct.GpxStruct{}, err
 				}
-
+				newLon := originalLon + lonAdjustment
+				if newLon < -180 { // -190
+					newLon = 360 + newLon
+				} else if newLon > 180 {
+					newLon = -360 + newLon
+				}
+				trkpt.Lon = strconv.FormatFloat(newLon, 'f', 8, 64)
 				data.Trks[i].Trksegs[j].Waypoints[k] = trkpt
 			}
 		}
