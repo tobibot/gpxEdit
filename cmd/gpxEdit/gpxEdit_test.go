@@ -17,7 +17,7 @@ func Test_readFile(t *testing.T) {
 		wantResult gpxStruct.GpxStruct
 		wantErr    bool
 	}{
-		{name: "ReadFile", args: args{fileName: "../resources/test_twoPoints.gpx"}, wantErr: false, wantResult: GetTwoEntriesGpx()},
+		{name: "ReadFile", args: args{fileName: "../../resources/test_twoPoints.gpx"}, wantErr: false, wantResult: GetTwoEntriesGpx()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -83,7 +83,7 @@ func Test_writeFile(t *testing.T) {
 		wantResult bool
 		wantErr    bool
 	}{
-		{name: "Writing File", args: args{fileName: "../resources/testOutput.gpx", data: &testData}, wantResult: true, wantErr: false},
+		{name: "Writing File", args: args{fileName: "../../resources/testOutput.gpx", data: &testData}, wantResult: true, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
