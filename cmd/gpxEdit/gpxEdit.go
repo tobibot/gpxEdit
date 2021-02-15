@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"strconv"
 
-	"github.com/tobibot/gpxEdit/cmd/gpxStruct"
+	"github.com/tobibot/gpxEdit/gpxStruct"
 )
 
 var (

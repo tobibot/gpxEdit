@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/xml"
-	"github.com/tobibot/gpxEdit/cmd/gpxStruct"
+	"github.com/tobibot/gpxEdit/gpxStruct"
 	"reflect"
 	"testing"
 )
